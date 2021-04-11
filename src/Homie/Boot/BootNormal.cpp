@@ -924,6 +924,9 @@ bool HomieInternals::BootNormal::__handleOTAUpdates(char* topic, char* payload, 
       if (*payload == 0xE9) {
         _otaIsBase64 = false;
         Interface::get().getLogger() << F("Firmware is binary") << endl;
+      } else if (*payload == 0x1F && *(payload+1) == 0x8b) {
+        _otaIsBase64 = false;
+        Interface::get().getLogger() << F("Firmware is gzip binary") << endl;     
       } else {
         // Base64-decode first two bytes. Compare decoded value against magic byte.
         char plain[2];  // need 12 bits

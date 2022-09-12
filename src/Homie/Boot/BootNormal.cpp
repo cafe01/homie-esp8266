@@ -108,6 +108,22 @@ void BootNormal::setup() {
     iNode->setup();
   }
 
+  // use current WiFi connection
+  if (WiFi.isConnected()) {
+    auto ip = WiFi.localIP();
+    auto mask = WiFi.subnetMask();
+    auto gw = WiFi.gatewayIP();
+    if (ip.isSet() && mask.isSet() && gw.isSet()) {
+      WiFiEventStationModeGotIP gotIpEvent;
+      gotIpEvent.ip = ip;
+      gotIpEvent.mask = mask;
+      gotIpEvent.gw = gw;
+      _onWifiGotIp(gotIpEvent);
+      return;
+    }
+  }
+
+  // initial connection
   _wifiConnect();
 }
 
